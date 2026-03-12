@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "XVAPL1snbC6FqGef70xulg3tJ75Z+aN5e0NjFGxtgsI=",
+  "Source": "vicentinos-api",
+  "BasePath": "_content/vicentinos-api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

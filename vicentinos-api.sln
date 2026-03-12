@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vicentinos-api", "vicentinos-api.csproj", "{B74A8FA2-5A19-854B-D4D5-6785BF74CFC6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B74A8FA2-5A19-854B-D4D5-6785BF74CFC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B74A8FA2-5A19-854B-D4D5-6785BF74CFC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B74A8FA2-5A19-854B-D4D5-6785BF74CFC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B74A8FA2-5A19-854B-D4D5-6785BF74CFC6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B342421-CAFC-4250-9EF4-5EFFF5978C85}
+	EndGlobalSection
+EndGlobal
