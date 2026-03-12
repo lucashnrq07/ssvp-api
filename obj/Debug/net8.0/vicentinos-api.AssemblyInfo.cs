@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("vicentinos-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+64eb820fcabf8dfb7347728d108ada66c3512f29")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0fc2f869375d70435f54ae5b700546ceec604930")]
 [assembly: System.Reflection.AssemblyProductAttribute("vicentinos-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("vicentinos-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
