@@ -37,4 +37,16 @@ public class AssistidoService {
                 assistido.getSaldo(),
                 assistido.getConferencia().getId());
     }
+
+    // BUSCA ASSISTIDO PELO ID
+    public AssistidoDTO buscarPorId (Long id) {
+        Assistido assistido = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Assistido não encontrado"));
+
+        return new AssistidoDTO(
+                assistido.getNome(),
+                assistido.getCpf(),
+                assistido.getSaldo(),
+                assistido.getConferencia().getId());
+    }
 }
