@@ -55,6 +55,15 @@ public class PedidoService {
         }
     }
 
+    // REMOVER ITEM
+    public void removerItem(Long pedidoId, Long produtoId) {
+        Pedido pedido = buscarPedido(pedidoId);
+        Item item = itemRepository.buscarItem(pedidoId, produtoId)
+                        .orElseThrow(() -> new RuntimeException("Item não encontrado"));
+
+        itemRepository.delete(item);
+    }
+
 
     // ===== MÉTODOS AUXILIARES =====
 

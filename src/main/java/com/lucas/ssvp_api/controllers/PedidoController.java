@@ -22,8 +22,21 @@ public class PedidoController {
 
     // ADICIONAR ITEM
     @PostMapping("/{pedidoId}/itens")
-    public ResponseEntity<Void> addItem(@PathVariable Long pedidoId, @RequestBody AddItemDTO dto) {
+    public ResponseEntity<Void> addItem(
+            @PathVariable Long pedidoId,
+            @RequestBody AddItemDTO dto
+    ) {
         service.addItem(pedidoId, dto.produtoId(), dto.quantidade());
         return ResponseEntity.ok().build();
+    }
+
+    // REMOVER ITEM
+    @DeleteMapping("/{pedidoId}/itens/{produtoId}")
+    public ResponseEntity<Void> removerItem(
+            @PathVariable Long pedidoId,
+            @PathVariable Long produtoId
+    ) {
+        service.removerItem(pedidoId, produtoId);
+        return ResponseEntity.noContent().build();
     }
 }
