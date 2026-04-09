@@ -86,7 +86,7 @@ public class PedidoService {
         return new Pedido(
                 null,
                 assistido,
-                Status.AGUARDANDO_SEPARACAO,
+                Status.PEDIDO_REALIZADO,
                 mes,
                 ano,
                 LocalDate.now()
