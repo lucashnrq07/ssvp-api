@@ -39,4 +39,13 @@ public class PedidoController {
         service.removerItem(pedidoId, produtoId);
         return ResponseEntity.noContent().build();
     }
+
+    // FINALIZAR PEDIDO
+    @PatchMapping("/{pedidoId}/finalizar")
+    public ResponseEntity<PedidoDTO> finalizarPedido(
+            @PathVariable Long pedidoId
+    ) {
+        PedidoDTO dto = service.finalizarPedido(pedidoId);
+        return ResponseEntity.ok(dto);
+    }
 }

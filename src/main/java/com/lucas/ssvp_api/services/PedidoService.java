@@ -13,7 +13,9 @@ import com.lucas.ssvp_api.repositories.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,6 +66,25 @@ public class PedidoService {
         itemRepository.delete(item);
     }
 
+    // FINALIZAR PEDIDO
+    public PedidoDTO finalizarPedido(Long pedidoId) {
+        Pedido pedido = buscarPedido(pedidoId);
+
+        validarPedidoPodeSerFinalizado(pedido);
+
+        List<Item> itens = buscarItensDoPedido(pedidoId);
+
+        BigDecimal total = calcularTotal(itens);
+
+        debitarSaldo(pedido.getAssistido(), total);
+
+        atualizarStatus(pedido);
+
+        repository.save(pedido);
+
+        return toDTO(pedido);
+    }
+
 
     // ===== MÉTODOS AUXILIARES =====
 
@@ -86,7 +107,7 @@ public class PedidoService {
         return new Pedido(
                 null,
                 assistido,
-                Status.PEDIDO_REALIZADO,
+                Status.PEDIDO_CRIADO,
                 mes,
                 ano,
                 LocalDate.now()
@@ -138,5 +159,45 @@ public class PedidoService {
                 produto.getPreco()
         );
         itemRepository.save(item);
+    }
+
+    // validar finalização de pedido
+    private void validarPedidoPodeSerFinalizado(Pedido pedido) {
+        if (pedido.getStatus() != Status.PEDIDO_CRIADO) {
+            throw new RuntimeException("Pedido já realizado");
+        }
+    }
+
+    // buscar lista de itens do pedido
+    private List<Item> buscarItensDoPedido(Long pedidoId) {
+        List<Item> itens = itemRepository.findByPedidoId(pedidoId);
+
+        if (itens.isEmpty()) {
+            throw new RuntimeException("Pedido sem itens");
+        }
+
+        return itens;
+    }
+
+    // calcular total
+    private BigDecimal calcularTotal(List<Item> itens) {
+        return itens.stream()
+                .map(item -> item.getPrecoUnitario()
+                        .multiply(BigDecimal.valueOf(item.getQuantidade())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    // debitar saldo
+    private void debitarSaldo(Assistido assistido, BigDecimal total) {
+        if (assistido.getSaldo().compareTo(total) < 0) {
+            throw new RuntimeException("Saldo insuficiente");
+        }
+
+        assistido.setSaldo(assistido.getSaldo().subtract(total));
+    }
+
+    // atualizar status
+    private void atualizarStatus(Pedido pedido) {
+        pedido.setStatus(Status.AGUARDANDO_SEPARACAO);
     }
 }

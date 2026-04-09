@@ -4,6 +4,7 @@ import com.lucas.ssvp_api.model.entities.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
@@ -14,4 +15,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     AND i.produto.id = :produtoId
     """)
     Optional<Item> buscarItem(Long pedidoId, Long produtoId);
+
+    List<Item> findByPedidoId(Long pedidoId);
 }
