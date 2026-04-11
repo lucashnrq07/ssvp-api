@@ -44,8 +44,10 @@ public class PedidoService {
     }
 
     // ADICIONAR ITEM
-    public void addItem(Long pedidoId, Long produtoId, Integer quantidade) {
+    public void addItem(Long pedidoId, Long produtoId, Integer quantidade, Long assistidoId) {
         Pedido pedido = buscarPedido(pedidoId);
+        validarDonoPedido(pedido, assistidoId);
+
         Produto produto = buscarProduto(produtoId);
 
         Optional<Item> itemExistente = buscarItemExistente(pedidoId, produtoId);
@@ -58,17 +60,20 @@ public class PedidoService {
     }
 
     // REMOVER ITEM
-    public void removerItem(Long pedidoId, Long produtoId) {
+    public void removerItem(Long pedidoId, Long produtoId, Long assistidoId) {
         Pedido pedido = buscarPedido(pedidoId);
+        validarDonoPedido(pedido, assistidoId);
+
         Item item = itemRepository.buscarItem(pedidoId, produtoId)
-                        .orElseThrow(() -> new RuntimeException("Item não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Item não encontrado"));
 
         itemRepository.delete(item);
     }
 
     // FINALIZAR PEDIDO
-    public PedidoDTO finalizarPedido(Long pedidoId) {
+    public PedidoDTO finalizarPedido(Long pedidoId, Long assistidoId) {
         Pedido pedido = buscarPedido(pedidoId);
+        validarDonoPedido(pedido, assistidoId);
 
         validarPedidoPodeSerFinalizado(pedido);
 
@@ -85,24 +90,25 @@ public class PedidoService {
         return toDTO(pedido);
     }
 
-
     // ===== MÉTODOS AUXILIARES =====
 
-    // ===== CRIAR PEDIDO =====
-    // buscar assistido
+    private void validarDonoPedido(Pedido pedido, Long assistidoId) {
+        if (!pedido.getAssistido().getId().equals(assistidoId)) {
+            throw new RuntimeException("Acesso negado");
+        }
+    }
+
     private Assistido buscarAssistido(Long id) {
         return assistidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Assistido não encontrado"));
     }
 
-    // validar pedido no mês
     private void validarPedidoNoMes(Long assistidoId, int mes) {
         if (repository.existsPedidoNoMes(assistidoId, mes)) {
             throw new RuntimeException("Já existe pedido para esse mês");
         }
     }
 
-    // cria entidade do pedido
     private Pedido criarPedidoEntity(Assistido assistido, int mes, int ano) {
         return new Pedido(
                 null,
@@ -114,7 +120,6 @@ public class PedidoService {
         );
     }
 
-    // converte entidade para DTO
     private PedidoDTO toDTO(Pedido pedido) {
         return new PedidoDTO(
                 pedido.getAssistido().getId(),
@@ -125,31 +130,25 @@ public class PedidoService {
         );
     }
 
-    // ===== ADICIONAR ITEM =====
-    // buscar pedido
     private Pedido buscarPedido(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
     }
 
-    // buscar produto
     private Produto buscarProduto(Long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
     }
 
-    // buscar item existente
     private Optional<Item> buscarItemExistente(Long pedidoId, Long produtoId) {
         return itemRepository.buscarItem(pedidoId, produtoId);
     }
 
-    // atualizar quantidade
     private void atualizarQuantidade(Item item, Integer quantidade) {
         item.setQuantidade(item.getQuantidade() + quantidade);
         itemRepository.save(item);
     }
 
-    // criar novo item
     private void criarNovoItem(Pedido pedido, Produto produto, Integer quantidade) {
         Item item = new Item(
                 null,
@@ -161,14 +160,12 @@ public class PedidoService {
         itemRepository.save(item);
     }
 
-    // validar finalização de pedido
     private void validarPedidoPodeSerFinalizado(Pedido pedido) {
         if (pedido.getStatus() != Status.PEDIDO_CRIADO) {
             throw new RuntimeException("Pedido já realizado");
         }
     }
 
-    // buscar lista de itens do pedido
     private List<Item> buscarItensDoPedido(Long pedidoId) {
         List<Item> itens = itemRepository.findByPedidoId(pedidoId);
 
@@ -179,7 +176,6 @@ public class PedidoService {
         return itens;
     }
 
-    // calcular total
     private BigDecimal calcularTotal(List<Item> itens) {
         return itens.stream()
                 .map(item -> item.getPrecoUnitario()
@@ -187,7 +183,6 @@ public class PedidoService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // debitar saldo
     private void debitarSaldo(Assistido assistido, BigDecimal total) {
         if (assistido.getSaldo().compareTo(total) < 0) {
             throw new RuntimeException("Saldo insuficiente");
@@ -196,7 +191,6 @@ public class PedidoService {
         assistido.setSaldo(assistido.getSaldo().subtract(total));
     }
 
-    // atualizar status
     private void atualizarStatus(Pedido pedido) {
         pedido.setStatus(Status.AGUARDANDO_SEPARACAO);
     }

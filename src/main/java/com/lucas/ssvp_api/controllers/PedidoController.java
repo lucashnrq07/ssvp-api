@@ -3,6 +3,7 @@ package com.lucas.ssvp_api.controllers;
 import com.lucas.ssvp_api.dto.AddItemDTO;
 import com.lucas.ssvp_api.dto.PedidoDTO;
 import com.lucas.ssvp_api.services.PedidoService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,11 @@ public class PedidoController {
     private final PedidoService service;
 
     // CRIAR PEDIDO
-    @PostMapping("/{assistidoId}")
-    public ResponseEntity<PedidoDTO> criarPedido(@PathVariable Long assistidoId) {
+    @PostMapping
+    public ResponseEntity<PedidoDTO> criarPedido(HttpServletRequest request) {
+
+        Long assistidoId = (Long) request.getAttribute("assistidoId");
+
         return ResponseEntity.ok(service.criarPedido(assistidoId));
     }
 
@@ -24,9 +28,13 @@ public class PedidoController {
     @PostMapping("/{pedidoId}/itens")
     public ResponseEntity<Void> addItem(
             @PathVariable Long pedidoId,
-            @RequestBody AddItemDTO dto
+            @RequestBody AddItemDTO dto,
+            HttpServletRequest request
     ) {
-        service.addItem(pedidoId, dto.produtoId(), dto.quantidade());
+        Long assistidoId = (Long) request.getAttribute("assistidoId");
+
+        service.addItem(pedidoId, dto.produtoId(), dto.quantidade(), assistidoId);
+
         return ResponseEntity.ok().build();
     }
 
@@ -34,18 +42,26 @@ public class PedidoController {
     @DeleteMapping("/{pedidoId}/itens/{produtoId}")
     public ResponseEntity<Void> removerItem(
             @PathVariable Long pedidoId,
-            @PathVariable Long produtoId
+            @PathVariable Long produtoId,
+            HttpServletRequest request
     ) {
-        service.removerItem(pedidoId, produtoId);
+        Long assistidoId = (Long) request.getAttribute("assistidoId");
+
+        service.removerItem(pedidoId, produtoId, assistidoId);
+
         return ResponseEntity.noContent().build();
     }
 
     // FINALIZAR PEDIDO
     @PatchMapping("/{pedidoId}/finalizar")
     public ResponseEntity<PedidoDTO> finalizarPedido(
-            @PathVariable Long pedidoId
+            @PathVariable Long pedidoId,
+            HttpServletRequest request
     ) {
-        PedidoDTO dto = service.finalizarPedido(pedidoId);
+        Long assistidoId = (Long) request.getAttribute("assistidoId");
+
+        PedidoDTO dto = service.finalizarPedido(pedidoId, assistidoId);
+
         return ResponseEntity.ok(dto);
     }
 }
