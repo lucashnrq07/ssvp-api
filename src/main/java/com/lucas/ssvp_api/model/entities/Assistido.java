@@ -24,7 +24,7 @@ public class Assistido {
     @Column(nullable = false, unique = true, length = 15)
     private String cpf;
 
-    @Column(nullable = false, length = 4)
+    @Column(nullable = false)
     private String pin;
 
     @Column(nullable = false, precision = 10, scale = 2)

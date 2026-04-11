@@ -7,6 +7,7 @@ import com.lucas.ssvp_api.model.entities.Conferencia;
 import com.lucas.ssvp_api.repositories.AssistidoRepository;
 import com.lucas.ssvp_api.repositories.ConferenciaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ public class AssistidoService {
 
     private final AssistidoRepository repository;
     private final ConferenciaRepository conferenciaRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     // CADASTRAR ASSISTIDO
     public AssistidoDTO cadastrarAssistido(CriarAssistidoDTO dto) {
@@ -27,7 +29,7 @@ public class AssistidoService {
                 null,
                 dto.nome(),
                 dto.cpf(),
-                dto.pin(),
+                passwordEncoder.encode(dto.pin()),
                 BigDecimal.ZERO,
                 conferencia));
 
