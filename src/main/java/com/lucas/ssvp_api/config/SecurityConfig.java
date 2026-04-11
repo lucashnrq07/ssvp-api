@@ -15,7 +15,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // desabilita CSRF (necessário pro H2)
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // permite iframe (H2 usa isso)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll() // libera H2
+                        .requestMatchers("/**").permitAll() // libera todas as rotas
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
