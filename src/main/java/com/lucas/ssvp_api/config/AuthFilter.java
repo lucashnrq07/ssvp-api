@@ -51,7 +51,7 @@ public class AuthFilter extends OncePerRequestFilter {
             Assistido assistido = authService.getByToken(token);
 
             // guarda o usuário na request
-            request.setAttribute("assistido", assistido);
+            request.setAttribute("assistidoId", assistido.getId());
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
